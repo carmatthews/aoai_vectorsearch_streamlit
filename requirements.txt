@@ -1,0 +1,5 @@
+streamlit
+streamlit-chat
+openai
+langchain
+azure-search-documents==11.4.0b8
