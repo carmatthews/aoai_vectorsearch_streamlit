@@ -54,38 +54,13 @@ openai.api_type = "azure"
 #Establish for connectivity to Azure Cognitive Search throughout
 credential = AzureKeyCredential(AZSEARCH_KEY)
 
-# region Query Cognitive Search
-
 @retry(wait=wait_random_exponential(min=1, max=20), stop=stop_after_attempt(6))
-# Function to generate embeddings for use query
+# Function to generate embeddings for user queries
 def generate_embeddings(text):
     response = openai.Embedding.create(
         input=text, engine=embeddings_model_deployment)
     embeddings = response['data'][0]['embedding']
     return embeddings
-
-# Pure Vector Search
-query = "tools for video analysis"  
-  
-search_client = SearchClient(AZSEARCH_ENDPOINT, AZSEARCH_INDEX_NAME, credential=credential)
-vector = Vector(value=generate_embeddings(query), k=10, fields="contentVector")
-  
-results = search_client.search(  
-    search_text=None,  
-    vectors= [vector],
-    select=["title", "content", "category"],
-)  
-  
-docs_list = []
-  
-for result in results:  
-    # print(f"Title: {result['title']}")  
-    # print(f"Score: {result['@search.score']}")  
-    # print(f"Text: {result['content']}")  
-    # print(f"Category: {result['category']}\n")  
-    docs_list.append(f"{result['content']} [{result['title']}] ^{result['@search.score']}")
-
-print(docs_list)
 
 
 # region PROMPT SETUP
@@ -156,9 +131,26 @@ download_conversation_button = st.sidebar.download_button(
 
 
 def generate_response(prompt):
-    #st.session_state["messages"].append({"role": "user", "content": prompt})
+
+    # Query cognitive search with user's request; return k# of results
+    search_client = SearchClient(AZSEARCH_ENDPOINT, AZSEARCH_INDEX_NAME, credential=credential)
+    vector = Vector(value=generate_embeddings(prompt), k=5, fields="contentVector")
+    
+    results = search_client.search(  
+        search_text=None,  
+        vectors= [vector],
+        select=["title", "content", "category"],
+    )  
+    
+    #format the search results to add to the prompt
+    docs_list = []
+    
+    for result in results:  
+        docs_list.append(f"{result['content']} [{result['title']}] ^{result['@search.score']}")
+     
+    
     # Add the user's search question with the specific context (documents from Azure Search).
-    st.session_state["messages"].append({"role":"user", "content":f"Question: {user_input} <context> {docs_list} </context>"})
+    st.session_state["messages"].append({"role":"user", "content":f"Question: {prompt} <context> {docs_list} </context>"})
     
     try:
         completion = openai.ChatCompletion.create(
