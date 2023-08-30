@@ -7,19 +7,19 @@ Combines examples from [Azure Cognitive Search Vector Search Code Sample](https:
 
 **Azure Cognitive Search**
 
-Details for creating an Azure Cognitive Search Service are available in [Create an Azure Cognitive Search service in the portal](https://learn.microsoft.com/en-us/azure/search/search-create-service-portal).  Once your service is created return to this notebook for creating and populating the index.
+Details for creating an Azure Cognitive Search Service are available in [Create an Azure Cognitive Search service in the portal](https://learn.microsoft.com/en-us/azure/search/search-create-service-portal).  
 
 
 **Azure OpenAI**
 
-You must first have setup an Azure OpenAI Service - for instructions to set this up, please see [Create and deploy an Azure OpenAI Service resource](https://learn.microsoft.com/en-us/azure/cognitive-services/openai/how-to/create-resource?pivots=web-portal).  
+To setup an Azure OpenAI Service, please see [Create and deploy an Azure OpenAI Service resource](https://learn.microsoft.com/en-us/azure/cognitive-services/openai/how-to/create-resource?pivots=web-portal).  
 
 
 Two types of large language models are used for the document chatbot system and must be deployed in your Azure OpenAI Service: <br/>
 1) Similarity [Embeddings](https://learn.microsoft.com/en-us/azure/cognitive-services/openai/concepts/understand-embeddings) model designed for creating the embeddings used for finding similarity between snippets of text.<br/>
-2) [ChatGPT or GPT-4](https://learn.microsoft.com/en-us/azure/cognitive-services/openai/how-to/chatgpt?pivots=programming-language-chat-completions) model for the conversational interface <br/>
+2) [GPT-35-Turbo or GPT-4](https://learn.microsoft.com/en-us/azure/cognitive-services/openai/how-to/chatgpt?pivots=programming-language-chat-completions) model for the conversational interface <br/>
 
-This example was built using the **text-embedding-ada-002** model for similarity embeddings and **gpt-35-turbo** for the conversational functionality. 
+This example uses the **text-embedding-ada-002** model for similarity embeddings and **gpt-35-turbo** for the conversational functionality. 
 
 
 # Running the Application
